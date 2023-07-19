@@ -1,50 +1,111 @@
-// import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 
-// Future<void> verifyPhoneNumber(String phoneNumber) async {
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
+class BookingPage extends StatefulWidget {
+  const BookingPage({super.key});
 
-//   try {
-//     String phoneNumber = '+923092771719';
-//     FirebaseAuth auth = await FirebaseAuth.instance;
-//     auth.verifyPhoneNumber(
-//       phoneNumber: phoneNumber,
-//       verificationCompleted: (phoneAuthCredential) {},
-//       verificationFailed: (verificationFailed) {},
-//       codeSent: (verificationId, forceResendingToken) {},
-//       codeAutoRetrievalTimeout: (verificationId) {},
-//     );
+  @override
+  State<BookingPage> createState() => _BookingPageState();
+}
 
-//     // await _auth.verifyPhoneNumber(
-//     //   phoneNumber: phoneNumber,
-//     //   timeout: const Duration(seconds: 60),
-//     //   verificationCompleted: verificationCompleted,
-//     //   verificationFailed: verificationFailed,
-//     //   codeSent: codeSent,
-//     //   codeAutoRetrievalTimeout: codeAutoRetrievalTimeout,
-//     // );
-//   } catch (error) {
-//     print('Phone verification failed: $error');
-//   }
-// }
+class _BookingPageState extends State<BookingPage> {
+  List<String> availableTimeSlots = [];
 
-// Future<void> signInWithPhoneNumber(
-//     String smsCode, String verificationId) async {
-//   final FirebaseAuth _auth = FirebaseAuth.instance;
+  @override
+  void initState() {
+    super.initState();
+    fetchAvailableTimeSlots();
+  }
 
-//   try {
-//     final credential = PhoneAuthProvider.credential(
-//       verificationId: verificationId,
-//       smsCode: smsCode,
-//     );
+  void fetchAvailableTimeSlots() {
+    final DateTime now = DateTime.now();
+    final DateTime startDate = DateTime(now.year, now.month, now.day, 0, 0);
 
-//     final userCredential = await _auth.signInWithCredential(credential);
-//     final user = userCredential.user;
-//     if (user != null) {
-//       // User signed in successfully
-//     } else {
-//       // User did not sign in successfully
-//     }
-//   } catch (error) {
-//     print('Phone authentication failed: $error');
-//   }
-// }
+    final List<String> slots = [];
+    for (int i = 0; i < 24; i++) {
+      final DateTime time = startDate.add(Duration(hours: i));
+      final String formattedTime =
+          '${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}';
+      slots.add(formattedTime);
+    }
+
+    setState(() {
+      availableTimeSlots = slots;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text(''),
+      ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Available Time Slots:',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 16.0),
+              SizedBox(
+                height: 2000,
+                child: ListView.builder(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: availableTimeSlots.length,
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      if (int.parse(
+                                  '${availableTimeSlots[index].toString()[0]}${availableTimeSlots[index].toString()[1]}') <
+                              10 ||
+                          int.parse(
+                                  '${availableTimeSlots[index].toString()[0]}${availableTimeSlots[index].toString()[1]}') >
+                              20) {
+                        return Container();
+                      } else {
+                        var found = timelist
+                            .where((element) =>
+                                element ==
+                                "${availableTimeSlots[index]} ${int.parse('${availableTimeSlots[index].toString()[0]}${availableTimeSlots[index].toString()[1]}') < 12 ? 'AM' : 'PM'}")
+                            .toList();
+                        if (found.isEmpty) {
+                          return MaterialButton(
+                            onPressed: () {
+                              timelist.add(
+                                  "${availableTimeSlots[index]} ${int.parse('${availableTimeSlots[index].toString()[0]}${availableTimeSlots[index].toString()[1]}') < 12 ? 'AM' : 'PM'}");
+                              setState(() {});
+                            },
+                            child: Container(
+                              color: Colors.blue,
+                              child: Center(
+                                child: Text(
+                                    "${availableTimeSlots[index]} ${int.parse('${availableTimeSlots[index].toString()[0]}${availableTimeSlots[index].toString()[1]}') < 12 ? 'AM' : 'PM'}"),
+                              ),
+                            ),
+                          );
+                        } else {
+                          return MaterialButton(
+                            onPressed: () {},
+                            child: Container(
+                              color: Colors.red,
+                              child: Center(
+                                child: Text(
+                                    "${availableTimeSlots[index]} ${int.parse('${availableTimeSlots[index].toString()[0]}${availableTimeSlots[index].toString()[1]}') < 12 ? 'AM' : 'PM'}"),
+                              ),
+                            ),
+                          );
+                        }
+                      }
+                    }),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  List<String> timelist = [];
+}

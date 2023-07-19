@@ -23,7 +23,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
           color: Colors.black,
         ),
         title: const Text(
-          "Notifications & Promo",
+          "Notifications & Orders",
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0,
@@ -52,10 +52,10 @@ class _NotificationsPageState extends State<NotificationsPage> {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
                     "Notifications",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -105,14 +105,14 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                               width: 5,
                                             ),
                                             const Text(
-                                              "Car & Bike Wash",
+                                              "Facial Service",
                                               style: TextStyle(
                                                   fontWeight: FontWeight.bold),
                                             ),
                                           ],
                                         ),
-                                        Row(
-                                          children: const [
+                                        const Row(
+                                          children: [
                                             Text("2023-05-03"),
                                           ],
                                         ),
@@ -126,7 +126,7 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                       width: 40,
                                       child: Padding(
                                         padding: const EdgeInsets.all(0.0),
-                                        child: Image.asset("images/cmmjp.png"),
+                                        child: Image.asset("images/rer.jpg"),
                                       ),
                                     ),
                                     trailing: Column(
@@ -143,8 +143,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                           child: Center(
                                             child: Text(
                                               index.isEven
-                                                  ? "Self-Booked"
-                                                  : "Driver-Booked",
+                                                  ? "Completed"
+                                                  : "Booked",
                                               style: const TextStyle(
                                                   color: Colors.white,
                                                   fontSize: 14),
@@ -164,8 +164,8 @@ class _NotificationsPageState extends State<NotificationsPage> {
                                     Expanded(
                                       child: Text(
                                         index.isEven
-                                            ? "Your Vehicle Got Washed Out ! check out more details"
-                                            : "Driver Reached Out The Station at 10'o clock friday 16/June ! check out more details",
+                                            ? "Transform your look and indulge in a pampering experience at our hair salon"
+                                            : "Step into our salon and let us make you feel gorgeous from root to tip. ",
                                         style: const TextStyle(
                                             fontSize: 12,
                                             color: Colors.black54,

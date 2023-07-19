@@ -21,7 +21,7 @@ class _OrdersPageState extends State<OrdersPage> {
           color: Colors.black,
         ),
         title: const Text(
-          "History & Track Orders",
+          "History",
           style: TextStyle(color: Colors.black),
         ),
         elevation: 0,
@@ -29,83 +29,6 @@ class _OrdersPageState extends State<OrdersPage> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Container(
-                height: 100,
-                color: Colors.white,
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 3,
-                        child: SizedBox(
-                          height: 100,
-                          width: double.infinity,
-                          child: Image.network(
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR8g8rJKIeBJ6M7Qk2-GjAibBrWVmvXd5lOMA&usqp=CAU",
-                            fit: BoxFit.fill,
-                          ),
-                        )),
-                    Expanded(
-                        flex: 7,
-                        child: Container(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: const [
-                                  Text(
-                                    "4",
-                                    style: TextStyle(
-                                        fontSize: 22,
-                                        color: Colors.green,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                  SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    "Pending Services",
-                                    style: TextStyle(
-                                        fontSize: 18,
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.w600),
-                                  )
-                                ],
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  TextButton(
-                                      onPressed: () {},
-                                      child: Text(
-                                        "Track Now",
-                                        style: TextStyle(
-                                            color: themecolorDarkBlue,
-                                            fontWeight: FontWeight.bold),
-                                      ))
-                                ],
-                              )
-                            ],
-                          ),
-                        )),
-                  ],
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: Row(
-                children: const [
-                  Text(
-                    "History",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                  ),
-                  Icon(Icons.history),
-                ],
-              ),
-            ),
             SizedBox(
               height: 100 * 15,
               child: ListView.builder(
@@ -119,33 +42,33 @@ class _OrdersPageState extends State<OrdersPage> {
                           height: 80,
                           width: double.infinity,
                           child: ListTile(
-                              title: Column(
+                              title: const Column(
                                 children: [
                                   Row(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "Car & Bike Wash",
+                                        "Facial Treatment",
                                         style: TextStyle(
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
                                   Row(
-                                    children: const [
+                                    children: [
                                       Text("2023-05-03"),
                                     ],
                                   ),
                                   Row(
-                                    children: const [
+                                    children: [
                                       Text(
-                                        "Rs 500",
+                                        "RP 500",
                                         style: TextStyle(
                                             color: Colors.green,
                                             fontWeight: FontWeight.bold),
                                       ),
                                     ],
                                   ),
-                                  const SizedBox(
+                                  SizedBox(
                                     height: 10,
                                   )
                                 ],
@@ -155,7 +78,7 @@ class _OrdersPageState extends State<OrdersPage> {
                                 width: 40,
                                 child: Padding(
                                   padding: const EdgeInsets.all(0.0),
-                                  child: Image.asset("images/cmmjp.png"),
+                                  child: Image.asset("images/rer.jpg"),
                                 ),
                               ),
                               trailing: Column(
@@ -169,12 +92,10 @@ class _OrdersPageState extends State<OrdersPage> {
                                             : themecolorlightBlue,
                                         borderRadius:
                                             BorderRadius.circular(20)),
-                                    child: Center(
+                                    child: const Center(
                                       child: Text(
-                                        index.isEven
-                                            ? "Self-Booked"
-                                            : "Driver-Booked",
-                                        style: const TextStyle(
+                                        "Self-Booked",
+                                        style: TextStyle(
                                             color: Colors.white, fontSize: 14),
                                       ),
                                     ),

@@ -35,9 +35,9 @@ class Trackorders extends StatelessWidget {
               child: Container(
                 height: 100,
                 color: themecolorDarkBlue,
-                child: Row(
+                child: const Row(
                   mainAxisAlignment: MainAxisAlignment.center,
-                  children: const [
+                  children: [
                     Text(
                       "Friday 14-May 10:30 PM",
                       style: TextStyle(
@@ -57,11 +57,11 @@ class Trackorders extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
+                    const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: const [
+                      children: [
                         Text(
-                          "Order Driver : Arbaz Khan",
+                          "Customer Name : Arbaz Khan",
                           style: TextStyle(
                               color: Colors.black,
                               fontWeight: FontWeight.w600,
@@ -80,7 +80,7 @@ class Trackorders extends StatelessWidget {
                             borderRadius: BorderRadius.circular(20)),
                         child: const Center(
                           child: Text(
-                            "Location Of Driver",
+                            "Location Of Shop",
                             style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
@@ -125,8 +125,8 @@ class Trackorders extends StatelessWidget {
                 color: Colors.white,
                 child: Row(
                   children: [
-                    Column(
-                      children: const [
+                    const Column(
+                      children: [
                         Padding(
                           padding: EdgeInsets.all(8.0),
                           child: Icon(Iconsax.card),
@@ -135,37 +135,37 @@ class Trackorders extends StatelessWidget {
                     ),
                     Expanded(
                         child: Container(
-                      child: Column(
+                      child: const Column(
                         children: [
-                          const SizedBox(
+                          SizedBox(
                             height: 10,
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Text(
-                                "Receiver :   Arbaz khan",
+                                "Barber's Details :   Arbaz khan",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 14),
                               ),
                             ],
                           ),
-                          const SizedBox(
+                          SizedBox(
                             height: 2,
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Text(
-                                "03121006638",
+                                "0-21-390-9029",
                                 style: TextStyle(
                                     fontWeight: FontWeight.w600, fontSize: 14),
                               ),
                             ],
                           ),
                           Row(
-                            children: const [
+                            children: [
                               Expanded(
                                 child: Text(
-                                  "Sindh, karachi - Nazimabad , block 3, plot # 2, block b , school, 74600",
+                                  "Jl MH Thamrin 59 Wisma Nusantara Lt 15, Dki Jakarta",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w600,
                                       color: Colors.black38,
@@ -216,136 +216,6 @@ class Trackorders extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  SizedBox(
-                    width: 50,
-                    child: Column(
-                      children: const [
-                        SizedBox(
-                          height: 40,
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: Text("14 apr \n 18:06"),
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: Text("14 apr \n 17:55"),
-                        ),
-                        SizedBox(
-                          height: 100,
-                          child: Text("14 apr \n 16:56"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 350,
-                    child: IconStepper(
-                        enableNextPreviousButtons: false,
-                        enableStepTapping: false,
-                        lineDotRadius: 2,
-                        stepRadius: 16,
-                        activeStepBorderColor: Colors.white,
-                        activeStepColor: themecolorDarkBlue,
-                        activeStepBorderWidth: 0,
-                        activeStepBorderPadding: 0.0,
-                        lineColor: themecolorDarkBlue,
-                        lineLength: 100,
-                        stepColor: Colors.grey,
-                        direction: Axis.vertical,
-                        icons: const [
-                          Icon(
-                            Icons.abc,
-                            color: Colors.transparent,
-                          ),
-                          Icon(
-                            Icons.abc,
-                            color: Colors.transparent,
-                          ),
-                          Icon(
-                            Icons.abc,
-                            color: Colors.transparent,
-                          ),
-                        ]),
-                  ),
-                  Expanded(
-                      child: Container(
-                    child: Column(
-                      children: [
-                        const SizedBox(
-                          height: 40,
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    "Ready for Vehicle Collection",
-                                    style: TextStyle(
-                                        color: themecolorDarkBlue,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              const Text(
-                                  "Provide your one time password and collect your vehicle"),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: const [
-                                  Text(
-                                    "Wahed Out",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              const Text(
-                                "got washed out, please wait lorem ndhujabhjbdhbhbhjbhjan",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                        SizedBox(
-                          height: 120,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: const [
-                                  Text(
-                                    "Driver Reached ",
-                                    style: TextStyle(
-                                        color: Colors.grey,
-                                        fontWeight: FontWeight.bold),
-                                  ),
-                                ],
-                              ),
-                              const Text(
-                                "Driver reached out at the station with your vehicle",
-                                style: TextStyle(color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ))
-                ],
-              ),
-            )
           ],
         ),
       ),

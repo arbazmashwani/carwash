@@ -3,9 +3,14 @@ import 'dart:async';
 import 'package:car_wash/constants/colors.dart';
 import 'package:car_wash/constants/navigation.dart';
 import 'package:car_wash/dashboard.dart';
+import 'package:car_wash/screens/Location/enablelocation.dart';
+import 'package:car_wash/screens/authentication/userinformation.dart';
+import 'package:car_wash/screens/authentication/widgets/firebaseserives.dart';
+import 'package:car_wash/screens/authentication/widgets/loading_widget.dart';
 import 'package:car_wash/try.dart';
 
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SignInPage extends StatefulWidget {
@@ -16,10 +21,54 @@ class SignInPage extends StatefulWidget {
 }
 
 class _SignInPageState extends State<SignInPage> {
+  TextEditingController emailcontroller = TextEditingController();
+  TextEditingController passwordcontroller = TextEditingController();
+  bool showpassword = true;
+  final FirebaseAuthService _authService = FirebaseAuthService();
+
+  Future signin() async {
+    bool signincomplete = false;
+    showDialog(
+        context: context,
+        builder: (context) {
+          return Center(
+            child: LoadingWidget(),
+          );
+        });
+
+    try {
+      if (emailcontroller.text.isEmpty) {
+        Fluttertoast.showToast(
+            msg: "Email is required", gravity: ToastGravity.BOTTOM);
+      } else if (passwordcontroller.text.isEmpty) {
+        Fluttertoast.showToast(
+            msg: "Password is required", gravity: ToastGravity.BOTTOM);
+      } else {
+        final email = emailcontroller.text;
+        final password = passwordcontroller.text;
+        var response =
+            await _authService.signInWithEmailAndPassword(email, password);
+
+        if (response == true) {
+          signincomplete = response;
+        }
+      }
+    } catch (e) {
+      Fluttertoast.showToast(msg: e.toString(), gravity: ToastGravity.BOTTOM);
+    } finally {
+      Navigator.pop(context);
+      if (signincomplete == true) {
+        animatednoBackNavigation(context, const DashboardScreen());
+      }
+    }
+  }
+
+  //
   final ScrollController _scrollController = ScrollController();
   Timer? _timer;
   timerlistener() {
     _timer = Timer.periodic(const Duration(milliseconds: 100), (timer) {
+      // ignore: deprecated_member_use
       if (WidgetsBinding.instance.window.viewInsets.bottom > 0.0) {
         if (mounted) {
           setState(() {
@@ -56,27 +105,17 @@ class _SignInPageState extends State<SignInPage> {
         child: Column(
           children: [
             Container(
-                height: 500,
+                height: 450,
                 color: themecolorDarkBlue,
                 child: Column(
                   children: [
                     const SizedBox(
                       height: 70,
                     ),
-                    Text(
-                      "We Care",
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 32, fontWeight: FontWeight.bold),
-                    ),
-                    Text(
-                      "For Your Vehicles",
-                      style: GoogleFonts.bebasNeue(
-                          fontSize: 22, fontWeight: FontWeight.w600),
-                    ),
                     SizedBox(
                         height: 250,
                         width: double.infinity,
-                        child: Image.asset("images/logoo.jpg")),
+                        child: Image.asset("images/rer.jpg")),
                     Expanded(
                         child: Container(
                       color: themecolorlightBlue,
@@ -88,9 +127,10 @@ class _SignInPageState extends State<SignInPage> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text("Book Experts Automobile",
+                                Text("Book Experts Barber's",
                                     style: GoogleFonts.lindenHill(
                                         fontSize: 25,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.w400))
                               ],
                             ),
@@ -100,6 +140,7 @@ class _SignInPageState extends State<SignInPage> {
                                 Text("Services through our",
                                     style: GoogleFonts.lindenHill(
                                         fontSize: 25,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.w400)),
                               ],
                             ),
@@ -109,6 +150,7 @@ class _SignInPageState extends State<SignInPage> {
                                 Text("Application",
                                     style: GoogleFonts.lindenHill(
                                         fontSize: 20,
+                                        color: Colors.white,
                                         fontWeight: FontWeight.w400)),
                               ],
                             ),
@@ -128,13 +170,13 @@ class _SignInPageState extends State<SignInPage> {
                   SizedBox(
                       height: 40,
                       width: MediaQuery.of(context).size.width,
-                      child: SizedBox(
+                      child: const SizedBox(
                           child: Padding(
-                        padding: const EdgeInsets.all(8.0),
+                        padding: EdgeInsets.all(8.0),
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
-                            Text("Let's get started! Enter your Mobile Number",
+                          children: [
+                            Text("Let's get started! Enter your Credientials",
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 17)),
                           ],
@@ -151,10 +193,40 @@ class _SignInPageState extends State<SignInPage> {
                       onChanged: (a) {
                         setState(() {});
                       },
-                      controller: telephonecontroller,
-                      keyboardType: TextInputType.phone,
+                      controller: emailcontroller,
+                      keyboardType: TextInputType.text,
                       decoration: InputDecoration(
-                          hintText: "+92",
+                          hintText: "Enter Email",
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(30),
+                            borderSide: const BorderSide(
+                              color: Colors.white,
+                            ),
+                          ),
+                          fillColor: Colors.white,
+                          filled: true),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(12.0),
+                    child: TextField(
+                      onTap: () {
+                        if (_timer!.isActive == false) {
+                          timerlistener();
+                        }
+                      },
+                      onChanged: (a) {},
+                      obscureText: true,
+                      controller: passwordcontroller,
+                      keyboardType: TextInputType.text,
+                      decoration: InputDecoration(
+                          hintText: "Enter Passord",
                           enabledBorder: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(30),
                             borderSide: const BorderSide(
@@ -173,15 +245,15 @@ class _SignInPageState extends State<SignInPage> {
                   ),
                   MaterialButton(
                     onPressed: () {
-                      if (telephonecontroller.text.isNotEmpty) {
-                        // navigationToNewScreen(context, const DashboardScreen());
+                      if (emailcontroller.text.isNotEmpty) {
+                        signin();
                       }
                     },
                     child: Container(
                       decoration: BoxDecoration(
-                          color: telephonecontroller.text.isEmpty
-                              ? const Color(0xffA3CBD9)
-                              : const Color(0xff4698B4),
+                          color: passwordcontroller.text.isEmpty
+                              ? themecolorDarkBlue.withOpacity(0.70)
+                              : themecolorDarkBlue,
                           borderRadius: BorderRadius.circular(10)),
                       width: double.infinity,
                       height: 52,

@@ -1,7 +1,19 @@
+import 'dart:math';
+
 import 'package:car_wash/constants/colors.dart';
 import 'package:car_wash/constants/navigation.dart';
 import 'package:car_wash/screens/homescreen/servicedetails.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+class LocationWithDistance {
+  final Map<Object?, Object?> locationData;
+  final double distance;
+
+  LocationWithDistance(this.locationData, this.distance);
+}
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -11,6 +23,65 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  List<LocationWithDistance> nearestLocations = [];
+
+// Function to fetch nearest locations from Firebase Realtime Database
+  Future fetchNearestLocations(
+      double userLatitude, double userLongitude, double maxDistance) async {
+    final databaseReference = FirebaseDatabase.instance.ref().child('branches');
+
+    DatabaseEvent dataSnapshot = await databaseReference.once();
+
+    Map datasnapshots = dataSnapshot.snapshot.value as dynamic;
+
+    datasnapshots.forEach((key, value) {
+      double latitude = value['latitude'];
+      double longitude = value['longitude'];
+
+      double distance =
+          calculateDistance(userLatitude, userLongitude, latitude, longitude);
+
+      if (distance <= maxDistance) {
+        nearestLocations.add(LocationWithDistance(value, distance));
+      }
+    });
+
+    nearestLocations.sort((a, b) => a.distance.compareTo(b.distance));
+
+    return nearestLocations;
+  }
+
+  double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
+    const double earthRadius = 6371.0;
+    double dLat = _toRadians(lat2 - lat1);
+    double dLon = _toRadians(lon2 - lon1);
+
+    double a = pow(sin(dLat / 2), 2) +
+        cos(_toRadians(lat1)) * cos(_toRadians(lat2)) * pow(sin(dLon / 2), 2);
+    double c = 2 * atan2(sqrt(a), sqrt(1 - a));
+
+    return earthRadius * c;
+  }
+
+  double _toRadians(double degrees) {
+    return degrees * pi / 180.0;
+  }
+
+  @override
+  void initState() {
+    checkuserlocation();
+    // TODO: implement initState
+    super.initState();
+  }
+
+  checkuserlocation() async {
+    SharedPreferences preferences = await SharedPreferences.getInstance();
+    double latitude = double.parse(preferences.getString("lat").toString());
+    double longitude = double.parse(preferences.getString("lon").toString());
+    await fetchNearestLocations(latitude, longitude, 50000000);
+    setState(() {});
+  }
+
   final PageController _pageController =
       PageController(initialPage: 0, viewportFraction: 0.83);
   @override
@@ -20,21 +91,19 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white,
-        title: Column(
+        title: const Column(
           children: [
+            Row(children: [
+              Text(
+                "current Location",
+                style: TextStyle(color: Colors.black),
+              ),
+            ]),
             Row(
-              children: const [
+              children: [
                 Text(
-                  "Current Address",
-                  style: TextStyle(color: Colors.black),
-                ),
-              ],
-            ),
-            Row(
-              children: const [
-                Text(
-                  "Sector 4/E , orangi town karachi",
-                  style: TextStyle(color: Colors.black, fontSize: 14),
+                  "Jl Cimandiri 6 Flat II/1, Dki Jakarta",
+                  style: TextStyle(color: Colors.black, fontSize: 12),
                 ),
               ],
             )
@@ -99,45 +168,192 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: const [
-                  Text(
-                    "Self Booking",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                  ),
-                ],
-              ),
-            ),
-            Card(
-              elevation: 0,
-              child: MaterialButton(
-                onPressed: () {},
-                child: Container(
-                  height: 30,
-                  width: double.infinity,
-                  decoration: BoxDecoration(
-                      color: themecolorDarkBlue,
-                      border: Border.all(color: themecolorDarkBlue),
-                      borderRadius: BorderRadius.circular(20)),
-                  child: const Center(
-                    child: Text(
-                      "Book now for Yourself",
+              padding: const EdgeInsets.all(12.0),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Nearest Papakilo Barber's",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    Text(
+                      "Search",
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                          color: Colors.white),
+                          fontSize: 18,
+                          color: Colors.grey),
                     ),
-                  ),
+                  ],
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            SizedBox(
+              height: 250,
+              child: ListView.builder(
+                  itemCount: nearestLocations.length,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return GestureDetector(
+                      onTap: () {
+                        navigationToNewScreen(
+                            context,
+                            ServiceDetails(
+                              name: nearestLocations[index]
+                                  .locationData["name"]
+                                  .toString(),
+                              Shopid: nearestLocations[index]
+                                  .locationData["uid"]
+                                  .toString(),
+                              pictureurl: nearestLocations[index]
+                                  .locationData["profile_picture"]
+                                  .toString(),
+                            ));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Container(
+                          height: 250,
+                          width: 250,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  flex: 6,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.amber,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        SizedBox(
+                                          height: 150,
+                                          width: 250,
+                                          child: Image.network(
+                                            nearestLocations[index]
+                                                .locationData[
+                                                    "profile_picture"]!
+                                                .toString(),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        // Positioned(
+                                        //     bottom: -15,
+                                        //     right: 10,
+                                        //     child: Container(
+                                        //         height: 35,
+                                        //         width: 35,
+                                        //         decoration: const BoxDecoration(
+                                        //             color: Colors.white,
+                                        //             shape: BoxShape.circle),
+                                        //         child: IconButton(
+                                        //             onPressed: () {
+                                        //               FirebaseDatabase.instance
+                                        //                   .ref()
+                                        //                   .child("brnches")
+                                        //                   .child(
+                                        //                       nearestLocations[
+                                        //                               index]
+                                        //                           .locationData[
+                                        //                               "uid"]
+                                        //                           .toString())
+                                        //                   .child("Fav")
+                                        //                   .child(FirebaseAuth
+                                        //                       .instance
+                                        //                       .currentUser!
+                                        //                       .uid
+                                        //                       .toString());
+                                        //             },
+                                        //             icon: const Icon(
+                                        //               Icons.favorite_border,
+                                        //               color: Colors.red,
+                                        //               size: 35,
+                                        //             )))),
+                                      ],
+                                    ),
+                                  )),
+                              Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.yellow,
+                                              ),
+                                              Text(
+                                                nearestLocations[index]
+                                                            .locationData[
+                                                                "Rating"]
+                                                            .toString() ==
+                                                        "null"
+                                                    ? "0"
+                                                    : nearestLocations[index]
+                                                        .locationData["Rating"]
+                                                        .toString(),
+                                                style: const TextStyle(
+                                                    color: Colors.grey),
+                                              )
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "Barber : ${nearestLocations[index].locationData["name"].toString()}",
+                                                  style: TextStyle(
+                                                      color: themecolorDarkBlue,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "${nearestLocations[index].distance.truncate().toString()}  Km away",
+                                                  style: const TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
-                    "Repairing Services",
+                    "50% off services",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],
@@ -151,7 +367,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        navigationToNewScreen(context, const ServiceDetails());
+                        // navigationToNewScreen(context, const ServiceDetails());
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
@@ -162,14 +378,16 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(4.0),
                                 child: Image.network(
-                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRmr5A4MuNqfmnkneEj4xmFVAaBWBvxlQxrxrN1fjBQas-iHL1mXL7oe-ORGR7JWmn8xLg&usqp=CAU"),
+                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXoIoihRWIjAWD-7PIOEr1gilPmHNkBZokmA&usqp=CAU",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               const Padding(
-                                padding: EdgeInsets.all(3.0),
+                                padding: EdgeInsets.all(6.0),
                                 child: Text(
-                                  "AC Service & Repair",
+                                  "Mirror Magic Salon",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14),
@@ -183,11 +401,164 @@ class _HomeScreenState extends State<HomeScreen> {
                   }),
             ),
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: const EdgeInsets.all(12.0),
+              child: SizedBox(
+                height: 20,
+                width: MediaQuery.of(context).size.width,
+                child: const Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Nearby Services",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    ),
+                    Text(
+                      "See All",
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 18,
+                          color: Colors.grey),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 250,
+              child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (context, index) {
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GestureDetector(
+                        onTap: () {
+                          // navigationToNewScreen(
+                          //     context, const ServiceDetails());
+                        },
+                        child: Container(
+                          height: 250,
+                          width: 250,
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20)),
+                          child: Column(
+                            children: [
+                              Expanded(
+                                  flex: 6,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                        color: Colors.amber,
+                                        borderRadius:
+                                            BorderRadius.circular(20)),
+                                    child: Stack(
+                                      clipBehavior: Clip.none,
+                                      children: [
+                                        Image.network(
+                                          "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTDlpM9l6Ni4vskN3sHcDJIaUTogmQ2rqC6dg&usqp=CAU",
+                                          fit: BoxFit.fill,
+                                        ),
+                                        Positioned(
+                                            top: 10,
+                                            left: 10,
+                                            child: Container(
+                                              color: themecolorDarkBlue,
+                                              child: const Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: Text(
+                                                  "Featured",
+                                                  style: TextStyle(
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                              ),
+                                            )),
+                                        Positioned(
+                                            bottom: -15,
+                                            right: 10,
+                                            child: Container(
+                                                height: 35,
+                                                width: 35,
+                                                decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                        color: Colors.grey),
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle),
+                                                child: const Icon(
+                                                  Icons.favorite,
+                                                  color: Colors.red,
+                                                ))),
+                                      ],
+                                    ),
+                                  )),
+                              Expanded(
+                                  flex: 4,
+                                  child: Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            children: [
+                                              Icon(
+                                                Icons.star,
+                                                color: themecolorDarkBlue,
+                                              ),
+                                              const Text(
+                                                "4.5 Rating",
+                                                style: TextStyle(
+                                                    color: Colors.grey),
+                                              )
+                                            ],
+                                          ),
+                                          Padding(
+                                            padding: const EdgeInsets.all(4.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "Hair Saloon Dresser",
+                                                  style: TextStyle(
+                                                      color: themecolorDarkBlue,
+                                                      fontSize: 16,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          const Padding(
+                                            padding: EdgeInsets.all(4.0),
+                                            child: Row(
+                                              children: [
+                                                Text(
+                                                  "1 Km",
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 13,
+                                                      fontWeight:
+                                                          FontWeight.w700),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  )),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  }),
+            ),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
-                    "Cleaning Services",
+                    "Facial Services",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],
@@ -196,12 +567,12 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 150,
               child: ListView.builder(
-                  itemCount: 3,
+                  itemCount: 10,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        navigationToNewScreen(context, const ServiceDetails());
+                        // navigationToNewScreen(context, const ServiceDetails());
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
@@ -210,14 +581,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           width: 100,
                           color: Colors.white,
                           child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Image.network(
-                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRsWz0G0vMFxX79KHSm3wKfCA3RYyfZivnSVg&usqp=CAU"),
+                              Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: Image.network(
+                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXoIoihRWIjAWD-7PIOEr1gilPmHNkBZokmA&usqp=CAU",
+                                  fit: BoxFit.cover,
+                                ),
+                              ),
                               const Padding(
-                                padding: EdgeInsets.all(3.0),
+                                padding: EdgeInsets.all(6.0),
                                 child: Text(
-                                  "Car & bike Wash",
+                                  "Mirror Magic Salon",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
                                       fontSize: 14),
@@ -230,12 +605,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     );
                   }),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
+            const Padding(
+              padding: EdgeInsets.all(8.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
-                    "Mechnical Repair Services",
+                    "Black Friday Services",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
                   ),
                 ],
@@ -244,12 +619,12 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(
               height: 150,
               child: ListView.builder(
-                  itemCount: 2,
+                  itemCount: 10,
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (context, index) {
                     return GestureDetector(
                       onTap: () {
-                        navigationToNewScreen(context, const ServiceDetails());
+                        // navigationToNewScreen(context, const ServiceDetails());
                       },
                       child: Padding(
                         padding: const EdgeInsets.all(2.0),
@@ -260,17 +635,19 @@ class _HomeScreenState extends State<HomeScreen> {
                           child: Column(
                             children: [
                               Padding(
-                                padding: const EdgeInsets.all(8.0),
+                                padding: const EdgeInsets.all(4.0),
                                 child: Image.network(
-                                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcThqei2ugnKx3x_SKuuC4N3lLgCWshfIY2XJA&usqp=CAU"),
+                                  "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXoIoihRWIjAWD-7PIOEr1gilPmHNkBZokmA&usqp=CAU",
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               const Padding(
-                                padding: EdgeInsets.all(1.0),
+                                padding: EdgeInsets.all(6.0),
                                 child: Text(
-                                  "Damage Repair & Tunning",
+                                  "Mirror Magic Salon",
                                   style: TextStyle(
                                       fontWeight: FontWeight.w500,
-                                      fontSize: 12),
+                                      fontSize: 14),
                                 ),
                               ),
                             ],
@@ -290,7 +667,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<String> picturelist = [
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTGNXtLeWTf3XmDjTqpuSq1SbFrc9Ij2cZayA&usqp=CAU",
-    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXIqHTF7f4rAKunF2N-tTSc-Klz88HlFDJCw&usqp=CAU"
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRVJdPO07IdvJWe6HrJ95Xzif0zZHKZXOavNQ&usqp=CAU",
+    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRHtZjb4qc9KUsuUn4XgS4AupUBkg4bFS3Brw&usqp=CAU"
   ];
 }

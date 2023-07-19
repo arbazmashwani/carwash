@@ -1,3 +1,4 @@
+import 'package:car_wash/constants/colors.dart';
 import 'package:car_wash/constants/navigation.dart';
 import 'package:car_wash/screens/Location/mylocation.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ class EnableLocationPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: themecolorDarkBlue,
       body: Column(
         mainAxisAlignment: MainAxisAlignment.end,
         children: [
@@ -18,21 +19,23 @@ class EnableLocationPage extends StatelessWidget {
               child: Container(
                 child: Column(
                   children: [
-                    Image.asset("images/cmmjp.png"),
+                    Image.asset("images/rer.jpg"),
                     const Padding(
                       padding: EdgeInsets.only(left: 20, right: 20),
                       child: Text(
-                        "Find Stations Near You",
+                        "Find Barbar's Near You",
                         style: TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 22),
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 22),
                       ),
                     ),
                     const Padding(
                       padding: EdgeInsets.only(left: 20, right: 20),
                       child: Text(
-                        "By Allowing location Acess, you can find out nearby stations and receive more accurate services",
+                        "By Allowing location Acess, you can find out nearby Barber's and receive more accurate services",
                         style: TextStyle(
-                            fontWeight: FontWeight.w400, color: Colors.black54),
+                            fontWeight: FontWeight.w400, color: Colors.white),
                       ),
                     )
                   ],
@@ -51,7 +54,8 @@ class EnableLocationPage extends StatelessWidget {
                       },
                       child: Container(
                         decoration: BoxDecoration(
-                            color: const Color(0xff4698B4),
+                            color: themecolorDarkBlue.withOpacity(0.40),
+                            border: Border.all(color: Colors.white),
                             borderRadius: BorderRadius.circular(10)),
                         width: double.infinity,
                         height: 52,
@@ -70,7 +74,7 @@ class EnableLocationPage extends StatelessWidget {
                       onPressed: () {},
                       child: Container(
                         decoration: BoxDecoration(
-                            color: const Color(0xffA3CBD9),
+                            color: themecolorlightBlue,
                             borderRadius: BorderRadius.circular(10)),
                         width: double.infinity,
                         height: 52,

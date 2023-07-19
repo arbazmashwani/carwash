@@ -26,10 +26,10 @@ class ServiceCart extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
                     "Your Items",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -43,15 +43,15 @@ class ServiceCart extends StatelessWidget {
               leading: SizedBox(
                 width: 50,
                 child: Image.network(
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXEx67WRzc-N02_WGpfw5D90mpxKbn5FBBhg&usqp=CAU"),
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR40SgnqQZ-clENTHdKlKnjtZ5spTihwGw5qA&usqp=CAU"),
               ),
-              subtitle: Row(
-                children: const [
-                  Text("RS 300 x 1"),
+              subtitle: const Row(
+                children: [
+                  Text("RP 300 x 1"),
                   SizedBox(
                     width: 70,
                   ),
-                  Text("RS 300"),
+                  Text("RP 300"),
                 ],
               ),
             ),
@@ -65,14 +65,6 @@ class ServiceCart extends StatelessWidget {
                 width: double.infinity,
                 child: Row(
                   children: [
-                    Expanded(
-                      flex: 3,
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Image.network(
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTS-Orx9rcpTdl2a3f6T75iMKCHGJe8lOKexw&usqp=CAU"),
-                      ),
-                    ),
                     Expanded(
                         flex: 8,
                         child: Column(
@@ -98,11 +90,11 @@ class ServiceCart extends StatelessWidget {
                                 ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                  top: 10, left: 20, right: 20),
+                            const Padding(
+                              padding:
+                                  EdgeInsets.only(top: 10, left: 20, right: 20),
                               child: Row(
-                                children: const [
+                                children: [
                                   Expanded(
                                     child: Text(
                                       "Unlock Offers with Coupen Codes",
@@ -135,12 +127,12 @@ class ServiceCart extends StatelessWidget {
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
-                    "Select Date & Time",
+                    "Select Date ",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                 ],
@@ -187,6 +179,17 @@ class ServiceCart extends StatelessWidget {
             const SizedBox(
               height: 15,
             ),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Row(
+                children: [
+                  Text(
+                    "Availibilty Time",
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                  ),
+                ],
+              ),
+            ),
             SizedBox(
               height: 60,
               child: ListView.builder(
@@ -202,9 +205,9 @@ class ServiceCart extends StatelessWidget {
                         decoration: BoxDecoration(
                             color: themecolorDarkBlue,
                             borderRadius: BorderRadius.circular(12)),
-                        child: Column(
+                        child: const Column(
                           mainAxisAlignment: MainAxisAlignment.center,
-                          children: const [
+                          children: [
                             Text(
                               "10:30 AM",
                               style: TextStyle(
@@ -218,10 +221,10 @@ class ServiceCart extends StatelessWidget {
                     );
                   }),
             ),
-            Padding(
-              padding: const EdgeInsets.all(12.0),
+            const Padding(
+              padding: EdgeInsets.all(12.0),
               child: Row(
-                children: const [
+                children: [
                   Text(
                     "Order Summary",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
@@ -229,13 +232,13 @@ class ServiceCart extends StatelessWidget {
                 ],
               ),
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "Sub Total",
                         style: TextStyle(
@@ -247,11 +250,11 @@ class ServiceCart extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
-                        "Rs 300",
+                        "RP 300",
                         style: TextStyle(
                             color: Colors.grey,
                             fontWeight: FontWeight.bold,
@@ -262,13 +265,13 @@ class ServiceCart extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "Discount",
                         style: TextStyle(
@@ -280,9 +283,9 @@ class ServiceCart extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "- Rs 0",
                         style: TextStyle(
@@ -295,13 +298,13 @@ class ServiceCart extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "Conviences Fee",
                         style: TextStyle(
@@ -313,9 +316,9 @@ class ServiceCart extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "Rs 20",
                         style: TextStyle(
@@ -328,13 +331,13 @@ class ServiceCart extends StatelessWidget {
                 ),
               ],
             ),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "Tax",
                         style: TextStyle(
@@ -346,9 +349,9 @@ class ServiceCart extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.all(12.0),
+                  padding: EdgeInsets.all(12.0),
                   child: Row(
-                    children: const [
+                    children: [
                       Text(
                         "Rs 50",
                         style: TextStyle(
@@ -361,27 +364,23 @@ class ServiceCart extends StatelessWidget {
                 ),
               ],
             ),
-            const Divider(
-              thickness: 1,
-              color: Colors.grey,
-            ),
             MaterialButton(
               onPressed: () {},
               child: Container(
                 decoration: BoxDecoration(
-                    color: const Color(0xff4698B4),
+                    color: themecolorDarkBlue,
                     borderRadius: BorderRadius.circular(10)),
                 width: double.infinity,
                 height: 52,
                 child: const Center(
                   child: Text(
-                    "Put Address",
+                    "Confirm",
                     style: TextStyle(color: Colors.white),
                   ),
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 40,
             )
           ],
